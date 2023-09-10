@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="content">
+        <h2>Заголовок 2</h2>
+        <p>Текст 2.2</p>
+        <p>Текст 2.3</p>
+        <p>Текст 2.1</p>
+
+        <h2>Заголовок 1</h2>
+        <p>Текст 1.1</p>
+        <p>Текст 1.3</p>
+        <p>Текст 1.2</p>
+    </div>
+
+    <input type="text" id="search-input">
+    <button id="search-button">Search</button>
+
+    <script>
+        $(document).ready(function () {
+            //sort list
+            window.setTimeout(function () {
+
+
+            if (confirm("Sort list?")) {
+              var content = $("#content");
+              var headers = content.find("h2").get();
+              headers.sort(function (a, b) {
+                  return $(a).text().localeCompare($(b).text());
+              });
+
+              let newContent = $("<div></div>");
+              $.each(headers, function (i, header) {
+                  var paragraphs = $(header).nextUntil("h2");
+                  paragraphs.sort(function (a, b) {
+                      return $(a).text().localeCompare($(b).text());
+                  });
+                  newContent.append(header);
+                  newContent.append(paragraphs);
+              });
+
+              content.html(newContent.html());
+            }
+          }, 2000);
+
+            $("#search-button").on("click", function () {
+                var searchInput = $("#search-input").val().trim().toLowerCase();
+
+                $("p").each(function () {
+                    var paragraph = $(this);
+                    var text = paragraph.text().toLowerCase();
+                    if (!text.includes(searchInput)) {
+                        paragraph.hide();
+                    } else {
+                        paragraph.show();
+                    }
+
+                    var header = paragraph.prevAll("h2").first();
+                    var paragraphs = header.nextUntil("h2");
+                    if (paragraphs.filter(":visible").length === 0) {
+                        header.hide();
+                    } else {
+                        header.show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
